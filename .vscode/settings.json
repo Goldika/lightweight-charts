@@ -8,5 +8,20 @@
         "website/build/**": true,
         "website/docs/api/**": true,
     },
-    "typescript.tsdk": "node_modules\\typescript\\lib"
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "workbench.colorCustomizations": {
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#ae4dbe",
+        "statusBar.background": "#903a9e",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#ae4dbe",
+        "statusBarItem.remoteBackground": "#903a9e",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "tab.activeBorder": "#ae4dbe",
+        "titleBar.activeBackground": "#903a9e",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#903a9e99",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.color": "#903a9e"
 }
