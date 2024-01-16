@@ -49,22 +49,30 @@ const thisMonth = Temporal.Now.zonedDateTime('persian', 'Asia/Tehran').with({
 	nanosecond: 0,
 });
 
+const getMonthData = (d: Temporal.ZonedDateTime) => {
+	return {
+		value: d.epochMilliseconds,
+		month: d.month,
+		year: d.year,
+	};
+};
+
 const monthStarts = {
 	front: thisMonth,
 	back: thisMonth,
-	values: [thisMonth],
+	values: [getMonthData(thisMonth)],
 };
 
 function expandMonthStarts(count: number): void {
 	if (count < 0) {
 		for (let i = 0; i < -count; i += 1) {
 			monthStarts.back = monthStarts.back.add({ months: -1 });
-			monthStarts.values.splice(0, 0, monthStarts.back);
+			monthStarts.values.splice(0, 0, getMonthData(monthStarts.back));
 		}
 	} else {
 		for (let i = 0; i < count; i += 1) {
 			monthStarts.front = monthStarts.front.add({ months: 1 });
-			monthStarts.values.push(monthStarts.front);
+			monthStarts.values.push(getMonthData(monthStarts.front));
 		}
 	}
 }
@@ -72,11 +80,11 @@ function expandMonthStarts(count: number): void {
 expandMonthStarts(6);
 expandMonthStarts(-60);
 
-function getMonthStart(v: number): Temporal.ZonedDateTime {
-	while (v < monthStarts.values[0].epochMilliseconds) {
+function getMonthStart(v: number): ReturnType<typeof getMonthData> {
+	while (v < monthStarts.values[0].value) {
 		expandMonthStarts(-12);
 	}
-	while (monthStarts.values[monthStarts.values.length - 1].epochMilliseconds < v) {
+	while (monthStarts.values[monthStarts.values.length - 1].value < v) {
 		expandMonthStarts(12);
 	}
 
@@ -84,7 +92,7 @@ function getMonthStart(v: number): Temporal.ZonedDateTime {
 	let b = monthStarts.values.length;
 	while (b - a > 1) {
 		const c = a + Math.floor((b - a) / 2);
-		if (v < monthStarts.values[c].epochMilliseconds) {
+		if (v < monthStarts.values[c].value) {
 			b = c;
 		} else {
 			a = c;
@@ -99,8 +107,8 @@ function weightByTime(currentDate: Date, prevDate: Date): TickMarkWeight {
 	const prevValue = prevDate.valueOf();
 	const currentMonth = getMonthStart(currentValue);
 	const prevMonth = getMonthStart(prevValue);
-	const currentDay = Math.floor((currentValue - currentMonth.epochMilliseconds) / aDay);
-	const prevDay = Math.floor((prevValue - prevMonth.epochMilliseconds) / aDay);
+	const currentDay = Math.floor((currentValue - currentMonth.value) / aDay);
+	const prevDay = Math.floor((prevValue - prevMonth.value) / aDay);
 
 	if (currentMonth.year !== prevMonth.year) {
 		return TickMarkWeight.Year;
